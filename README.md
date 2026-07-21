@@ -191,6 +191,16 @@ http://localhost:3000
 
 ![Riwayat](docs/images/riwayat.png)
 ```
+## 👨‍💼 Halaman User
+<img width="1348" height="730" alt="image" src="https://github.com/user-attachments/assets/161f46d9-ea73-4519-b497-e48c3896d36b" />
+<img width="213" height="465" alt="image" src="https://github.com/user-attachments/assets/35e4edf5-5a1e-4b32-8def-d4736905ac10" /><br>
+<img width="219" height="466" alt="image" src="https://github.com/user-attachments/assets/a41cf3d1-a47e-4d64-95cc-ab6b7a9ee896" />
+<br>
+<img width="581" height="516" alt="image" src="https://github.com/user-attachments/assets/6d4b5840-f144-43ad-8454-66d64fa68b83" />
+<br>
+<img width="586" height="522" alt="image" src="https://github.com/user-attachments/assets/002f83e9-d3fe-47da-aa02-e5c509de7463" /><br>
+<img width="579" height="509" alt="image" src="https://github.com/user-attachments/assets/ceb40e04-05ba-4395-bab3-6b599e60a3d0" /><br>
+
 
 ---
 
@@ -208,7 +218,16 @@ http://localhost:3000
 ![Rekap](docs/images/rekap.png)
 
 ![Pegawai](docs/images/pegawai.png)
+
 ```
+![Login] <img width="1032" height="694" alt="image" src="https://github.com/user-attachments/assets/791a0cdc-f726-4ee6-87bd-8f83cdee9b0f" /> <br>
+![Dashboardadmin] <img width="1017" height="658" alt="image" src="https://github.com/user-attachments/assets/aabe9c7c-61a1-4c85-9598-6da5f4384275" />
+ <br>
+![approvalcuti] <img width="1349" height="689" alt="image" src="https://github.com/user-attachments/assets/fb1ce567-ec0b-4d2d-982d-52a76ed7950b" />
+<br>
+![rekapabsensiadmin]<img width="1359" height="693" alt="image" src="https://github.com/user-attachments/assets/448be864-848e-4513-8886-8e2d5f91f003" /><br>
+![logbookpegawaiadmin]<img width="1366" height="683" alt="image" src="https://github.com/user-attachments/assets/f757c0ae-d43f-4459-8448-483138d48f6d" />
+<br>
 
 ---
 
