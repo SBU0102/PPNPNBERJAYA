@@ -543,7 +543,7 @@ export default function CheckInPage() {
           )
         ) {
           lockTime =
-            '07:05:00';
+            '07:45:00';
         } else if (
           userPos.includes('CS')
         ) {
@@ -560,10 +560,10 @@ export default function CheckInPage() {
           )
         ) {
           lockTime =
-            '18:05:00';
+            '20:00:00';
         } else {
           lockTime =
-            '19:00:00';
+            '20:05:00';
         }
       }
 
