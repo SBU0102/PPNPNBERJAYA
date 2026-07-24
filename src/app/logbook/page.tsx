@@ -39,7 +39,7 @@ export default function LogbookPage() {
   const [statusLogbook, setStatusLogbook] = useState('')
 
   // URL UNTUK CHECKLIST RUANGAN
-  const checklistUrl = `https://kppn-checker.vercel.app/checklist/form?worker=${encodeURIComponent(userData.fullName)}`;
+  const checklistUrl = `https://kpknl-checker.vercel.app/checklist/form?worker=${encodeURIComponent(userData.fullName)}`;
 
   // --- Daftar Tugas Sesuai Jabatan ---
   const tugasPPNPN = [
