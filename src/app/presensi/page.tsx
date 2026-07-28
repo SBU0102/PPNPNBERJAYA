@@ -551,7 +551,7 @@ export default function CheckInPage() {
             '07:30:00';
         } else {
           lockTime =
-            '08:00:00';
+            '07:30:00';
         }
       } else {
         if (

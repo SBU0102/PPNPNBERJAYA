@@ -6,9 +6,16 @@ import { redirect, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { toast, Toaster } from 'react-hot-toast';
 
+// const OFFICE_LOCATION = {
+//   latitude: 5.179003,
+//   longitude: 97.149272,
+//   RADIUS_M: 200,
+// };
+
+// ========== Koordinat Kantor KPKNL Lhokseumawe ==========
 const OFFICE_LOCATION = {
-  latitude: 5.179003,
-  longitude: 97.149272,
+  latitude: 5.178367,
+  longitude: 97.140541,
   RADIUS_M: 200,
 };
 
