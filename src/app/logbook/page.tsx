@@ -54,7 +54,7 @@ export default function LogbookPage() {
     "Pelayanan konsultasi tamu dan satker",
     "Membantu kegiatan rapat dan dokumentasi",
     "Membantu pegawai dalam tugas kantor",
-    "Mengendarai kendaraan dinas kepala kantor",
+    "Mengemudikan kendaraan dinas kepala kantor",
     "Lainnya"
   ]
   const tugasSatpam = [
@@ -74,7 +74,7 @@ export default function LogbookPage() {
     "Mencuci Motor Operasional",
     "Mengantar Ka.Kantor atau pegawai sesuai jadwal",
     "Memastikan kendaraan siap digunakan Accu, air wipper, tekanan angin",
-    "Mengendarai kendaraan dinas kepala kantor",
+    "Mengemudikan kendaraan dinas kepala kantor",
     "Lainnya"
   ]
   const tugasCS = [
