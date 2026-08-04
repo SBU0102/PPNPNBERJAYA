@@ -534,13 +534,33 @@ export default function CheckInPage() {
 
       const now = new Date();
 
+      // ========= start cek format waktu =======
+      console.log('=== DEBUG TIMEZONE ===');
+      console.log('Local Date:', now.toString());
+      console.log('ISO/UTC:', now.toISOString());
+      console.log(
+        'Timezone:',
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+      );
+      console.log(
+        'Local Time:',
+        now.toLocaleString('id-ID')
+      );
+      console.log(
+        'WIB Time:',
+        now.toLocaleString('id-ID', {
+          timeZone: 'Asia/Jakarta',
+          dateStyle: 'full',
+          timeStyle: 'long',
+        })
+      );
+      // ========= end cek format waktu =======
+
       let lockTime = '08:00:00';
 
       if (shift === 'pagi') {
         if (
-          userPos.includes(
-            'SATPAM'
-          )
+          userPos.includes('SATPAM') || userPos.includes('Satpam')
         ) {
           lockTime =
             '07:45:00';
@@ -551,19 +571,17 @@ export default function CheckInPage() {
             '07:30:00';
         } else {
           lockTime =
-            '07:30:00';
+            '07:30:02'; //PPNPN lebih fleksibel, jadi bisa masuk 07:30:02 - 07:59:59, tapi tetap dianggap terlambat jika lewat dari 08:00:00
         }
       } else {
         if (
-          userPos.includes(
-            'SATPAM'
-          )
+          userPos.includes('SATPAM') || userPos.includes('Satpam')
         ) {
           lockTime =
-            '20:00:00';
+            '19:45:00';
         } else {
           lockTime =
-            '20:05:00';
+            '20:00:00'; //Shift malam untuk semua selain satpam, dianggap terlambat jika lewat dari 20:00:00
         }
       }
 
