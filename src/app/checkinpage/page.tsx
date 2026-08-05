@@ -162,7 +162,7 @@ export default function CheckInPage() {
       // Logika Kunci Jam
       if (shift === 'pagi') {
         if (userPos.includes('SATPAM')) {
-          lockTime = '07:05:00'; // Satpam Pagi: 7.00 + 5 mnt
+          lockTime = '07:45:00'; // Satpam Pagi: 7.00 + 45 mnt
         } else if (userPos.includes('CS')) {
           lockTime = '07:30:00'; // CS: 6.30 + 1 jam
         } else {
@@ -170,9 +170,9 @@ export default function CheckInPage() {
         }
       } else {
         if (userPos.includes('SATPAM')) {
-          lockTime = '18:05:00'; // Satpam Malam: 18.00 + 5 mnt
+          lockTime = '19:45:00'; // Satpam Malam: 19.00 + 45 mnt
         } else {
-          lockTime = '19:00:00'; // Malam Lainnya: 18.00 + 1 jam
+          lockTime = '20:00:00'; // Malam Lainnya: 20.00 + 1 jam
         }
       }
 

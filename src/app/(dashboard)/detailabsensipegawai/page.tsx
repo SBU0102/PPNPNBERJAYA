@@ -255,7 +255,7 @@ export default function DetailAbsensiPegawaiPage() {
 
                         if ((att.shift || '').toLowerCase().includes('pagi')) {
                             if (userPos.includes('SATPAM')) {
-                                [lockHour, lockMin] = [7, 5]; 
+                                [lockHour, lockMin] = [7, 45]; 
                             } else if (userPos.includes('CS')) {
                                 [lockHour, lockMin] = [7, 30];
                             } else {
@@ -263,9 +263,9 @@ export default function DetailAbsensiPegawaiPage() {
                             }
                         } else {
                             if (userPos.includes('SATPAM')) {
-                                [lockHour, lockMin] = [18, 5];
+                                [lockHour, lockMin] = [19, 45];
                             } else {
-                                [lockHour, lockMin] = [19, 0];
+                                [lockHour, lockMin] = [20, 0];
                             }
                         }
 

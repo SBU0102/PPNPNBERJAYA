@@ -106,12 +106,12 @@ export default function RekapAbsensiPage() {
         let limitInHour, limitInMin, limitOutHour, limitOutMin
 
         if ((att.shift || '').toLowerCase().includes('pagi')) {
-          if (currentPos.includes('SATPAM')) [limitInHour, limitInMin] = [7, 5]
+          if (currentPos.includes('SATPAM')) [limitInHour, limitInMin] = [7, 45]
           else if (currentPos.includes('CS')) [limitInHour, limitInMin] = [7, 30]
           else [limitInHour, limitInMin] = [8, 0]
           limitOutHour = 17; limitOutMin = 0
         } else {
-          if (currentPos.includes('SATPAM')) [limitInHour, limitInMin] = [18, 5]
+          if (currentPos.includes('SATPAM')) [limitInHour, limitInMin] = [19, 45]
           else [limitInHour, limitInMin] = [19, 0]
           limitOutHour = 2; limitOutMin = 0
         }

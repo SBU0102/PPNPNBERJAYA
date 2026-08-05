@@ -351,12 +351,12 @@ export default function RekapAbsensiMatrix() {
 
           let lockHour, lockMin
           if ((s.shift || '').toLowerCase().includes('pagi')) {
-            if (userPos.includes('SATPAM')) [lockHour, lockMin] = [7, 5]
+            if (userPos.includes('SATPAM')) [lockHour, lockMin] = [7, 45]
             else if (userPos.includes('CS')) [lockHour, lockMin] = [7, 30]
             else [lockHour, lockMin] = [8, 0]
           } else {
-            if (userPos.includes('SATPAM')) [lockHour, lockMin] = [18, 5]
-            else [lockHour, lockMin] = [19, 0]
+            if (userPos.includes('SATPAM')) [lockHour, lockMin] = [19, 45]
+            else [lockHour, lockMin] = [20, 0]
           }
 
           if (checkInMinutes > lockHour * 60 + lockMin) dayLateCount++
