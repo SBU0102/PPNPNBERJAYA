@@ -166,7 +166,7 @@ export default function CheckInPage() {
         } else if (userPos.includes('CS')) {
           lockTime = '07:30:00'; // CS: 6.30 + 1 jam
         } else {
-          lockTime = '08:00:00'; // Umum: 7.00 + 1 jam
+          lockTime = '07:30:00'; // PPNPN : 7.00 + 30 mnt
         }
       } else {
         if (userPos.includes('SATPAM')) {

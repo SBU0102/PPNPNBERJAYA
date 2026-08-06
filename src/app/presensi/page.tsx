@@ -571,7 +571,7 @@ export default function CheckInPage() {
             '07:30:00';
         } else {
           lockTime =
-            '07:30:02'; //PPNPN lebih fleksibel, jadi bisa masuk 07:30:02 - 07:59:59, tapi tetap dianggap terlambat jika lewat dari 08:00:00
+            '07:30:00'; //PPNPN lebih fleksibel, jadi bisa masuk 07:30:02 - 07:59:59, tapi tetap dianggap terlambat jika lewat dari 08:00:00
         }
       } else {
         if (

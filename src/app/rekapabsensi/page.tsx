@@ -108,7 +108,7 @@ export default function RekapAbsensiPage() {
         if ((att.shift || '').toLowerCase().includes('pagi')) {
           if (currentPos.includes('SATPAM')) [limitInHour, limitInMin] = [7, 45]
           else if (currentPos.includes('CS')) [limitInHour, limitInMin] = [7, 30]
-          else [limitInHour, limitInMin] = [8, 0]
+          else [limitInHour, limitInMin] = [7, 30] // Default untuk shift pagi PPNPN
           limitOutHour = 17; limitOutMin = 0
         } else {
           if (currentPos.includes('SATPAM')) [limitInHour, limitInMin] = [19, 45]

@@ -259,7 +259,7 @@ export default function DetailAbsensiPegawaiPage() {
                             } else if (userPos.includes('CS')) {
                                 [lockHour, lockMin] = [7, 30];
                             } else {
-                                [lockHour, lockMin] = [8, 0];
+                                [lockHour, lockMin] = [7, 30]; // Default untuk shift pagi PPNPN
                             }
                         } else {
                             if (userPos.includes('SATPAM')) {
