@@ -229,6 +229,9 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <option value="Meninggalkan Kantor">Meninggalkan Kantor (Keperluan Pribadi)</option>
                 <option value="Keperluan Mendesak (Pribadi)">Keperluan Mendesak (Pribadi)</option>
                 <option value="Sakit (Tanpa Kuota Cuti)">Sakit (Tanpa Kuota Cuti Tahunan)</option>
+                {/* Tambahan Opsi Izin */}
+                <option value="Perjalanan Dinas (ST)">Perjalan Dinas (ST)</option>
+                
               </select>
             </div>
 
