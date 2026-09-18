@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 import { Button } from '@/components/ui/button'
-import { Loader2, ArrowLeft, FileSpreadsheet, FileText, Search, Filter, Info, Briefcase } from 'lucide-react' 
+import { Loader2, ArrowLeft, FileSpreadsheet, FileText, Search, Filter, Info, Briefcase, CalendarDays, Plus, Trash2 } from 'lucide-react' 
 import toast, { Toaster } from 'react-hot-toast'
 import XLSX from 'xlsx-js-style' 
 // Import Library PDF
@@ -100,6 +100,28 @@ export default function RekapAbsensiMatrix() {
   const [permissionMap, setPermissionMap] = useState<Map<string, PermissionInfo>>(new Map())
   const [quotaMap, setQuotaMap] = useState<Map<string, number>>(new Map())
   const [holidayMap, setHolidayMap] = useState<Record<string, string>>({})
+  const [holidayDate, setHolidayDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'))
+  const [holidayDescription, setHolidayDescription] = useState<string>('')
+  const [holidaySaving, setHolidaySaving] = useState(false)
+  const [holidayDeleting, setHolidayDeleting] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  // CEK AKSES ADMIN
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('role, is_admin')
+        .eq('id', user.id)
+        .single()
+
+      setIsAdmin(data?.is_admin === true || data?.role === 'admin')
+    }
+    checkAdmin()
+  }, [])
 
   // 2. FETCH DATA
   const fetchData = async () => {
@@ -228,6 +250,64 @@ export default function RekapAbsensiMatrix() {
       toast.error("Gagal mengambil data: " + error.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const addNationalHoliday = async () => {
+    if (!isAdmin) {
+      toast.error('Hanya admin yang dapat mengatur libur nasional.')
+      return
+    }
+    if (!holidayDate || !holidayDescription.trim()) {
+      toast.error('Tanggal dan keterangan libur wajib diisi.')
+      return
+    }
+
+    setHolidaySaving(true)
+    try {
+      const { error } = await supabase
+        .from('public_holidays')
+        .insert({
+          date: holidayDate,
+          description: holidayDescription.trim(),
+        })
+
+      if (error) {
+        if (error.code === '23505') {
+          throw new Error('Tanggal tersebut sudah terdaftar sebagai libur nasional.')
+        }
+        throw error
+      }
+
+      toast.success('Libur nasional berhasil ditambahkan.')
+      setHolidayDescription('')
+      await fetchData()
+    } catch (error: any) {
+      toast.error(error?.message || 'Gagal menambahkan libur nasional.')
+    } finally {
+      setHolidaySaving(false)
+    }
+  }
+
+  const deleteNationalHoliday = async (date: string) => {
+    if (!isAdmin) return
+    const description = holidayMap[date] || 'libur nasional'
+    if (!window.confirm(`Hapus ${description} (${date})?`)) return
+
+    setHolidayDeleting(date)
+    try {
+      const { error } = await supabase
+        .from('public_holidays')
+        .delete()
+        .eq('date', date)
+
+      if (error) throw error
+      toast.success('Libur nasional dihapus.')
+      await fetchData()
+    } catch (error: any) {
+      toast.error(error?.message || 'Gagal menghapus libur nasional.')
+    } finally {
+      setHolidayDeleting(null)
     }
   }
 
@@ -852,6 +932,70 @@ const getCellColor = (code: string, isWeekendOrHoliday: boolean) => {
                 <Info className="w-3 h-3" />
                 <span>Geser ke kanan untuk lihat sisa cuti</span>
             </div>
+        </div>
+      </div>
+
+      {/* ================= LIBUR NASIONAL ================= */}
+      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <CalendarDays className="w-5 h-5 text-red-600" />
+          <div>
+            <h2 className="font-bold text-gray-800">Libur Nasional</h2>
+            <p className="text-xs text-gray-500">Admin dapat menambah atau menghapus tanggal libur nasional. Pegawai tetap dapat melakukan presensi pada tanggal libur.</p>
+          </div>
+        </div>
+
+        {isAdmin && (
+          <div className="grid grid-cols-1 md:grid-cols-[180px_1fr_auto] gap-2 items-end mb-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Tanggal</label>
+              <input
+                type="date"
+                value={holidayDate}
+                onChange={(e) => setHolidayDate(e.target.value)}
+                className="w-full border rounded-md p-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Keterangan</label>
+              <input
+                type="text"
+                value={holidayDescription}
+                onChange={(e) => setHolidayDescription(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') addNationalHoliday() }}
+                placeholder="Contoh: Hari Kemerdekaan RI"
+                className="w-full border rounded-md p-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            <Button onClick={addNationalHoliday} disabled={holidaySaving} className="bg-red-600 hover:bg-red-700 text-white gap-2">
+              {holidaySaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+              {holidaySaving ? 'Menyimpan...' : 'Tambah Libur'}
+            </Button>
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-2">
+          {Object.keys(holidayMap).sort().length === 0 ? (
+            <span className="text-xs text-gray-400 italic">Belum ada libur nasional pada {monthNameStr}.</span>
+          ) : (
+            Object.entries(holidayMap).sort(([a], [b]) => a.localeCompare(b)).map(([date, description]) => (
+              <div key={date} className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2">
+                <span className="font-bold text-red-700">{format(parseISO(date), 'dd MMM yyyy', { locale: idLocale })}</span>
+                <span className="text-red-800">{description}</span>
+                {isAdmin && (
+                  <button
+                    type="button"
+                    onClick={() => deleteNationalHoliday(date)}
+                    disabled={holidayDeleting === date}
+                    className="ml-1 text-red-600 hover:text-red-800 disabled:opacity-50"
+                    title="Hapus libur"
+                  >
+                    {holidayDeleting === date ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                  </button>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </div>
 
