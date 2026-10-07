@@ -63,7 +63,7 @@ type MatrixRow = {
     date: string
     code: 
   | 'H' | '2x' | 'T' | '2T¹' | '2T²'
-  | 'I' | 'IP' | 'IP½'
+  | 'I' | 'IP' | 'IP½' | 'ST'
   | 'C' | 'S' | 'A' | '½' | 'L' | '-'
   | 'LAM' | 'LAM(P)' | 'LAP' | 'LAP(P)' | 'P' | 'F'
  
@@ -76,6 +76,7 @@ type MatrixRow = {
     Sft: number     
     T: number       
     I: number
+    ST: number
     IP: number 
     C: number
     S: number
@@ -342,7 +343,7 @@ export default function RekapAbsensiMatrix() {
 
   return filteredProfiles.map((profile, index) => {
     const rowData: MatrixRow['days'] = []
-    let stats = { H: 0, Sft: 0, T: 0, I: 0, IP: 0, C: 0, S: 0, A: 0, Half: 0 }
+    let stats = { H: 0, Sft: 0, T: 0, I: 0, ST:0, IP: 0, C: 0, S: 0, A: 0, Half: 0 }
     const remainingLeave = quotaMap.has(profile.id) ? quotaMap.get(profile.id)! : null
 
     daysArray.forEach(day => {
@@ -358,7 +359,7 @@ export default function RekapAbsensiMatrix() {
       let color = 'bg-white'
       let tooltip = ''
 
-      // ===== PERMISSION & LAM / LAP =====
+      // ===== PERMISSION & LAM / LAP / ST / SAKIT =====
       if (permissionMap.has(key)) {
         const perm = permissionMap.get(key)!
         const izinType = perm.jenisIzin.toUpperCase()
@@ -387,6 +388,17 @@ export default function RekapAbsensiMatrix() {
             tooltip = 'Lupa Absen Pulang (Tidak Potong Gaji)'
             stats.I++
           }
+          // Penambahan ST dan SAKIT
+          } else if (izinType.includes('PERJALANAN DINAS') || izinType.includes('ST')) {
+          code = 'ST'
+          color = 'bg-teal-200 text-teal-800 font-bold'
+          tooltip = 'Perjalanan Dinas / Surat Tugas (ST)'
+          stats.ST++
+          } else if (izinType.includes('SAKIT')) {
+          code = 'S'
+          color = 'bg-orange-200 text-orange-800 font-bold'
+          tooltip = `Izin Sakit: ${perm.jenisIzin}`
+          stats.S++
         } else {
           if (perm.potongGaji) {
             if (perm.halfDay) {
@@ -599,7 +611,9 @@ export default function RekapAbsensiMatrix() {
   'S': { fill: { fgColor: { rgb: "FED7AA" } }, font: { color: { rgb: "9A3412" }, bold: true } },
   'I': { fill: { fgColor: { rgb: "FEF08A" } }, font: { color: { rgb: "854D0E" }, bold: true } },
   'IP': { fill: { fgColor: { rgb: "FDA4AF" } }, font: { color: { rgb: "881337" }, bold: true } }, 
-  'IP½': { fill: { fgColor: { rgb: "FECDD3" } }, font: { color: { rgb: "9F1239" }, bold: true } }, 
+  'IP½': { fill: { fgColor: { rgb: "FECDD3" } }, font: { color: { rgb: "9F1239" }, bold: true } },
+  // 'ST' menggunakan Teal/Tosca
+  'ST': { fill: { fgColor: { rgb: "99F6E4" } }, font: { color: { rgb: "115E59" }, bold: true } }, 
   '½': { fill: { fgColor: { rgb: "E9D5FF" } }, font: { color: { rgb: "6B21A8" }, bold: true } },
   'A': { fill: { fgColor: { rgb: "EF4444" } }, font: { color: { rgb: "FFFFFF" }, bold: true } },
 
@@ -635,7 +649,7 @@ export default function RekapAbsensiMatrix() {
 
     const tableHeaderLabel = [
       "No", "Nama Pegawai", "Jabatan", ...daysHeader, 
-      "Hadir", "Shift", "Telat", "Izin", "Iz.Pot", "Cuti", "Sakit", "½", "Alpha", "Sisa"
+      "Hadir", "Shift", "Telat", "Izin", "Iz.Pot","ST", "Cuti", "Sakit", "½", "Alpha", "Sisa"
     ]
     const tableHeaderRow = tableHeaderLabel.map(h => ({ v: h, s: headerStyle }))
 
@@ -668,6 +682,7 @@ export default function RekapAbsensiMatrix() {
       rowCells.push({ v: row.stats.T, s: statStyle })
       rowCells.push({ v: row.stats.I, s: statStyle })
       rowCells.push({ v: row.stats.IP, s: { ...statStyle, fill: { fgColor: { rgb: "FECDD3" } } } })
+      rowCells.push({ v: row.stats.ST, s: statStyle })
       rowCells.push({ v: row.stats.C, s: statStyle })
       rowCells.push({ v: row.stats.S, s: statStyle })
       rowCells.push({ v: row.stats.Half, s: statStyle })
@@ -692,6 +707,7 @@ export default function RekapAbsensiMatrix() {
       { code: 'I', desc: 'Izin (I)', styleKey: 'I' },
       { code: 'IP', desc: 'Izin Potong (IP)', styleKey: 'IP' },
       { code: 'IP½', desc: 'Izin Potong ½ (IP½)', styleKey: 'IP½' },
+      { code: 'ST', desc: 'Perjalanan Dinas (ST)', styleKey: 'ST' },
       { code: '½', desc: '½ Hari', styleKey: '½' },
       { code: 'L', desc: 'Libur Nasional', styleKey: 'L' },
       { code: '', desc: 'Akhir Pekan', styleKey: 'WEEKEND' },
@@ -722,8 +738,10 @@ export default function RekapAbsensiMatrix() {
     });
     // =========================================================================
 
+ 
+
     const ws_data = [
-        titleRow, periodRow, [{ v: "", s: {} }], tableHeaderRow, ...tableBodyRows, ...legendRows
+        titleRow, periodRow, [{ v: "", s: {} }], tableHeaderRow, ...tableBodyRows,  ...legendRows
     ]
 
     const ws = XLSX.utils.aoa_to_sheet([])
@@ -765,7 +783,7 @@ export default function RekapAbsensiMatrix() {
     const daysHeader = Array.from({ length: daysCount }, (_, i) => (i + 1).toString())
     // Header Tabel PDF dengan kolom IP
     const tableHead = [
-      ["No", "Nama", "Jabatan", ...daysHeader, "H", "Sft", "T", "I", "IP", "C", "S", "½", "A", "Sisa"]
+      ["No", "Nama", "Jabatan", ...daysHeader, "H", "Sft", "T", "I","ST", "IP", "C", "S", "½", "A", "Sisa"]
     ]
 
     // Rows
@@ -780,6 +798,7 @@ export default function RekapAbsensiMatrix() {
         row.stats.Sft,
         row.stats.T,
         row.stats.I,
+        row.stats.ST,
         row.stats.IP, // Data IP
         row.stats.C,
         row.stats.S,
@@ -802,6 +821,7 @@ const getCellColor = (code: string, isWeekendOrHoliday: boolean) => {
   if (code === 'I') return [254, 240, 138]     // Light Yellow (FEF08A)
   if (code.startsWith('IP')) return [253, 164, 175] // Rose (FDA4AF)
   if (code === '½') return [233, 213, 255]     // Purple (E9D5FF)
+  if (code === 'ST') return [153, 246, 228] // Teal soft (99F6E4)
 
   // --- PENYELARASAN 4 KODE BARU (Mengikuti Fill Color sebelumnya) ---
   if (code === 'LAM') return [251, 207, 232]    // Pink Soft (FBCFE8)
@@ -864,7 +884,7 @@ const getCellColor = (code: string, isWeekendOrHoliday: boolean) => {
     const keteranganLines = [
   "Keterangan:",
   "1 Shift (H) | 2 Shift (2x) | 2 Shift (1 Telat) (2T¹) | 1 Shift Telat (T)",
-  "Cuti (C) | Sakit (S) | Izin (I) | Izin Potong (IP) | ½ Hari",
+  "Cuti (C) | Sakit (S) | Izin (I) |Perjalanan Dinas (ST) | Izin Potong (IP) | ½ Hari",
   "L (Libur Nasional) | Akhir Pekan (Warna Merah) | A (Alpha)",
   "LAM = Lupa Absen Masuk | LAM(P) = Lupa Absen Masuk (Potong Gaji)",
   "LAP = Lupa Absen Pulang | LAP(P) = Lupa Absen Pulang (Potong Gaji)",
@@ -1015,7 +1035,7 @@ const getCellColor = (code: string, isWeekendOrHoliday: boolean) => {
                         <th rowSpan={2} className="border border-gray-600 p-2 min-w-[200px] sticky left-0 bg-gray-800 z-20 text-left">Nama</th>
                         <th rowSpan={2} className="border border-gray-600 p-2 min-w-[100px]">Jabatan</th>
                         <th colSpan={daysInCurrentMonth} className="border border-gray-600 p-1 bg-gray-700">Tanggal</th>
-                        <th colSpan={9} className="border border-gray-600 p-1 bg-blue-900">Total</th>
+                        <th colSpan={10} className="border border-gray-600 p-1 bg-blue-900">Total</th>
                         <th rowSpan={2} className="border border-gray-600 p-2 min-w-[80px] bg-blue-800">
                             <div className="flex flex-col items-center gap-1">
                                 <Briefcase className="w-4 h-4"/>
@@ -1038,6 +1058,7 @@ const getCellColor = (code: string, isWeekendOrHoliday: boolean) => {
                         <th className="border border-gray-300 w-10 bg-green-200 text-green-800">Sft</th>
                         <th className="border border-gray-300 w-9 bg-yellow-500 text-white">T</th>
                         <th className="border border-gray-300 w-9 bg-yellow-100 text-yellow-700">I</th>
+                        <th className="border border-gray-300 w-9 bg-blue-100 text-blue-700">ST</th>
                         <th className="border border-gray-300 w-9 bg-rose-200 text-rose-800">IP</th>
                         <th className="border border-gray-300 w-9 bg-blue-100 text-blue-700">C</th>
                         <th className="border border-gray-300 w-9 bg-orange-100 text-orange-700">S</th>
@@ -1065,6 +1086,7 @@ const getCellColor = (code: string, isWeekendOrHoliday: boolean) => {
                             <td className="border border-gray-300 font-bold bg-green-100">{row.stats.Sft}</td>
                             <td className="border border-gray-300 font-bold bg-yellow-100 text-yellow-700">{row.stats.T}</td>
                             <td className="border border-gray-300 font-bold bg-yellow-50">{row.stats.I}</td>
+                            <td className="border border-gray-300 font-bold bg-blue-200">{row.stats.ST}</td>
                             <td className="border border-gray-300 font-bold bg-rose-50 text-rose-700">{row.stats.IP}</td>
                             <td className="border border-gray-300 font-bold bg-blue-50">{row.stats.C}</td>
                             <td className="border border-gray-300 font-bold bg-orange-50">{row.stats.S}</td>
@@ -1112,6 +1134,10 @@ const getCellColor = (code: string, isWeekendOrHoliday: boolean) => {
 
   <div className="flex items-center gap-1.5">
     <span className="w-4 h-4 rounded bg-rose-200 border border-rose-300 inline-block"></span> Izin Potong (IP)
+  </div>
+
+  <div className="flex items-center gap-1.5">
+    <span className="w-4 h-4 rounded bg-teal-200 border border-teal-300 inline-block"></span> Perjalanan Dinas (ST)
   </div>
 
   <div className="flex items-center gap-1.5">

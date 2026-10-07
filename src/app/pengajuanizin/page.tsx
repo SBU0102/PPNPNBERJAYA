@@ -231,6 +231,8 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <option value="Sakit (Tanpa Kuota Cuti)">Sakit (Tanpa Kuota Cuti Tahunan)</option>
                 {/* Tambahan Opsi Izin */}
                 <option value="Perjalanan Dinas (ST)">Perjalan Dinas (ST)</option>
+                {/* Tambahan Opsi Izin */}
+                <option value="Izin Terlambat">Izin Terlambat</option>
                 
               </select>
             </div>
